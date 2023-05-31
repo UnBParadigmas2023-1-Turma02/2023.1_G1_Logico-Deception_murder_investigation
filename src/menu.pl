@@ -131,5 +131,4 @@ detective_menu :-
   option_scientist_menu(X),
   !.
 
-list_objects_from_suspect(Suspect) :-
   
