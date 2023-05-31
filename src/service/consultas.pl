@@ -8,3 +8,7 @@ consultarObjetos(Suspeito) :-
     write(Suspeito), write(' possui o objeto: '), write(Objeto), nl,
     fail.
 consultarObjetos(_).
+
+listarSuspeito() :-
+    listing(suspeito)
+listarSuspeito(_).
