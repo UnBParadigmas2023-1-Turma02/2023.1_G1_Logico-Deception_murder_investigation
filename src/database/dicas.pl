@@ -127,3 +127,11 @@ tipoDeDica(lutando, expressao_da_vitima).
 tipoDeDica(assustado, expressao_da_vitima).
 tipoDeDica(com_dor, expressao_da_vitima).
 tipoDeDica(sem_expressao, expressao_da_vitima).
+
+
+/* Para testes: 
+local:-
+        write('Digite "1." para o local:'), read(N), N is 1,tipoDeDica(X, local_crime), write(X), nl, fail.
+clima:- 
+        write('Digite "2." para o clima: '), read(C), C is 2,tipoDeDica(X, clima), write(X), nl, fail.
+*/
