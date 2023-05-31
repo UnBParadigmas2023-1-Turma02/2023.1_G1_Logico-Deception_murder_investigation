@@ -1,8 +1,8 @@
 % Faz a consulta nas bases do arquivo de regras, suspeitos, objetos e vestigios
 :- consult('rules.pl').
-:- consult('suspeito.pl').
-:- consult('objetos.pl').
-:- consult('vestigios.pl').
+:- consult('database/suspeitos.pl').
+:- consult('database/objetos.pl').
+:- consult('database/vestigios.pl').
 
 :-dynamic solucao_suspeito/1.
 :-dynamic solucao_objeto/1.
