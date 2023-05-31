@@ -1,3 +1,6 @@
+:- consult('suspeitos.pl').
+:- consult('objetos.pl').
+
 suspeitoObjeto(maria, injecao).
 suspeitoObjeto(maria, corda).
 suspeitoObjeto(maria, guarda-chuva).

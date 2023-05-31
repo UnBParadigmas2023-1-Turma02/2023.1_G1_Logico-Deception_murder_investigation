@@ -1,3 +1,6 @@
+:- consult('suspeitos.pl').
+:- consult('vestigios.pl').
+
 suspeitoVestigio(maria, diamante).
 suspeitoVestigio(maria, caneca).
 suspeitoVestigio(maria, dinheiro).
