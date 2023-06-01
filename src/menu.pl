@@ -3,6 +3,8 @@
 :- consult('database/suspeitos.pl').
 :- consult('database/objetos.pl').
 :- consult('database/vestigios.pl').
+:- consult('database/suspeitoObjeto.pl').
+:- consult('database/suspeitoVestigio.pl').
 
 :-dynamic solucao_suspeito/1.
 :-dynamic solucao_objeto/1.
@@ -16,6 +18,10 @@ is_objeto_empty :-
 
 is_vestigios_empty :-
   \+ solucao_vestigios(_).
+
+get_nth_value(Predicate, N, Value) :-
+  findall(X, call(Predicate, X), List),
+  nth1(N, List, Value).
 
 % --------------------------------------------------------
 % Menu inicial da aplicação
@@ -73,39 +79,44 @@ option_scientist_menu(_) :- write('Opção inválida. Tente novamente.'), nl, fa
 % facilitar a escolha do usuario
 print_suspeitos :-
   nl,
-  findall(Name, suspeito(Name), Records),
+  findall(Name, suspeito(_, Name), Records),
   print_records_with_counter(Records, 1),
   nl,
   read(X),
   X > 0,
   retractall(solucao_suspeito(_)),
-  assert(solucao_suspeito(X)),
+  suspeito(X, Name),
+  assert(solucao_suspeito(Name)),
   scientist_menu.
 % --------------------------------------------------------
 % Print dos objetos possiveis cadastrados com um contador para 
 % facilitar a escolha do usuario
 print_objeto :-
   nl,
-  findall(Name, objeto(Name), Records),
+  solucao_suspeito(Y),
+  findall(X, suspeitoObjeto(Y, _, X), Records),
   print_records_with_counter(Records, 1),
   nl,
   read(X),
   X > 0,
   retractall(solucao_objeto(_)),
-  assert(solucao_objeto(X)),
+  suspeitoObjeto(Y, X, ObjectName),
+  assert(solucao_objeto(ObjectName)),
   scientist_menu.
 % --------------------------------------------------------
 % Print dos vestigios possiveis cadastrados com um contador para 
 % facilitar a escolha do usuario
 print_vestigios :-
   nl,
-  findall(Name, vestigios(Name), Records),
+  solucao_suspeito(Y),
+  findall(X, suspeitoVestigio(Y, _, X), Records),
   print_records_with_counter(Records, 1),
   nl,
   read(X),
   X > 0,
   retractall(solucao_vestigios(_)),
-  assert(solucao_vestigios(X)),
+  suspeitoVestigio(Y, X, VestigioName),
+  assert(solucao_vestigios(VestigioName)),
   scientist_menu.
 
 % --------------------------------------------------------

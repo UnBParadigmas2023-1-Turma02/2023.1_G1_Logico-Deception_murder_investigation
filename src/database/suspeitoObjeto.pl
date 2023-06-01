@@ -1,32 +1,32 @@
 :- consult('suspeitos.pl').
 :- consult('objetos.pl').
 
-suspeitoObjeto(maria, injecao).
-suspeitoObjeto(maria, corda).
-suspeitoObjeto(maria, guarda-chuva).
-suspeitoObjeto(maria, explosivo).
-suspeitoObjeto(maria, motoserra).
+suspeitoObjeto(maria, 1, injecao).
+suspeitoObjeto(maria, 2, corda).
+suspeitoObjeto(maria, 3, guarda-chuva).
+suspeitoObjeto(maria, 4, explosivo).
+suspeitoObjeto(maria, 5, motoserra).
 
-suspeitoObjeto(joao, machado).
-suspeitoObjeto(joao, veneno).
-suspeitoObjeto(joao, sniper).
-suspeitoObjeto(joao, picareta).
-suspeitoObjeto(joao, vinho).
+suspeitoObjeto(joao, 1, machado).
+suspeitoObjeto(joao, 2, veneno).
+suspeitoObjeto(joao, 3, sniper).
+suspeitoObjeto(joao, 4, picareta).
+suspeitoObjeto(joao, 5, vinho).
 
-suspeitoObjeto(pedro, chute).
-suspeitoObjeto(pedro, cinto).
-suspeitoObjeto(pedro, martelo).
-suspeitoObjeto(pedro, chave).
-suspeitoObjeto(pedro, trofeu).
+suspeitoObjeto(pedro, 1, chute).
+suspeitoObjeto(pedro, 2, cinto).
+suspeitoObjeto(pedro, 3, martelo).
+suspeitoObjeto(pedro, 4, chave).
+suspeitoObjeto(pedro, 5, trofeu).
 
-suspeitoObjeto(ana, gasolina).
-suspeitoObjeto(ana, castical).
-suspeitoObjeto(ana, travesseiro).
-suspeitoObjeto(ana, tijolo).
-suspeitoObjeto(ana, cobra).
+suspeitoObjeto(ana, 1, gasolina).
+suspeitoObjeto(ana, 2, castical).
+suspeitoObjeto(ana, 3, travesseiro).
+suspeitoObjeto(ana, 4, tijolo).
+suspeitoObjeto(ana, 5, cobra).
 
-suspeitoObjeto(carlos, faca).
-suspeitoObjeto(carlos, tesoura).
-suspeitoObjeto(carlos, fumaca).
-suspeitoObjeto(carlos, zarabatana).
-suspeitoObjeto(carlos, toalha).
+suspeitoObjeto(carlos, 1, faca).
+suspeitoObjeto(carlos, 2, tesoura).
+suspeitoObjeto(carlos, 3, fumaca).
+suspeitoObjeto(carlos, 4, zarabatana).
+suspeitoObjeto(carlos, 5, toalha).
