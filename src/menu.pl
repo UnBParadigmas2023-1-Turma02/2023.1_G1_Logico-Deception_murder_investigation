@@ -167,11 +167,11 @@ option_detective_menu(_) :- % Opção inválida
 palpite :-
   nl,
   write('=== PALPITE ==='), nl,
-  write('Digite o palpite do Suspeito: '),
+  write('Digite seu palpite para suspeito: '), nl,
   read(PalpiteSuspeito),
-  write('Digite o palpite do Objeto: '),
+  write('Digite seu palpite para objeto: '), nl,
   read(PalpiteObjeto),
-  write('Digite o palpite do Vestígio: '),
+  write('Digite seu palpite para vestígio: '), nl,
   read(PalpiteVestigio),
   nl,
   (
@@ -183,4 +183,4 @@ palpite :-
     write('Você ERROU o palpite!'), nl
   ),
   nl,
-  write('=== FIM DO JOGO ==='), nl.
+  write('=== FIM DO JOGO ==='), nl, initial_menu.
