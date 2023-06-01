@@ -5,6 +5,9 @@
 :- consult('database/vestigios.pl').
 :- consult('database/suspeitoObjeto.pl').
 :- consult('database/suspeitoVestigio.pl').
+:- consult('database/dicas.pl').
+
+% --------------------------------------------------------
 
 :-dynamic solucao_suspeito/1.
 :-dynamic solucao_objeto/1.
@@ -19,9 +22,24 @@ is_objeto_empty :-
 is_vestigios_empty :-
   \+ solucao_vestigios(_).
 
-get_nth_value(Predicate, N, Value) :-
-  findall(X, call(Predicate, X), List),
-  nth1(N, List, Value).
+% --------------------------------------------------------
+
+:- dynamic hint_counter/1.
+hint_counter(0).
+
+get_hint_counter(Count) :-
+  hint_counter(Count).
+
+increment_hint_counter :-
+  retract(hint_counter(OldCount)),
+  NewCount is OldCount + 1,
+  assert(hint_counter(NewCount)).
+
+% --------------------------------------------------------
+
+:- dynamic hints/2.
+add_hint(Hint, Type) :-
+  assert(hints(Hint, Type)).
 
 % --------------------------------------------------------
 % Menu inicial da aplicação
@@ -40,6 +58,7 @@ option_initial_menu(0) :- !.
 option_initial_menu(1) :- scientist_menu, nl, !.
 option_initial_menu(2) :- show_rules, !.
 option_initial_menu(_) :- write('Opção inválida. Tente novamente.'), nl, fail.
+
 % --------------------------------------------------------
 % Menu de cientista forense
 scientist_menu :-
@@ -61,6 +80,7 @@ scientist_menu :-
   read(X),
   option_scientist_menu(X),
   !.
+
 option_scientist_menu(0) :- !.
 option_scientist_menu(1) :- print_suspeitos, !.
 option_scientist_menu(2) :- print_objeto, !.
@@ -74,9 +94,11 @@ option_scientist_menu(4) :-
     fail
   ).
 option_scientist_menu(_) :- write('Opção inválida. Tente novamente.'), nl, fail.
+
 % --------------------------------------------------------
 % Print dos suspeitos possiveis cadastrados com um contador para 
 % facilitar a escolha do usuario
+
 print_suspeitos :-
   nl,
   findall(Name, suspeito(_, Name), Records),
@@ -88,9 +110,11 @@ print_suspeitos :-
   suspeito(X, Name),
   assert(solucao_suspeito(Name)),
   scientist_menu.
+
 % --------------------------------------------------------
 % Print dos objetos possiveis cadastrados com um contador para 
 % facilitar a escolha do usuario
+
 print_objeto :-
   nl,
   solucao_suspeito(Y),
@@ -103,9 +127,11 @@ print_objeto :-
   suspeitoObjeto(Y, X, ObjectName),
   assert(solucao_objeto(ObjectName)),
   scientist_menu.
+
 % --------------------------------------------------------
 % Print dos vestigios possiveis cadastrados com um contador para 
 % facilitar a escolha do usuario
+
 print_vestigios :-
   nl,
   solucao_suspeito(Y),
@@ -121,6 +147,7 @@ print_vestigios :-
 
 % --------------------------------------------------------
 % Faz o print dos registros com um contador
+
 print_records_with_counter([], _).
 print_records_with_counter([Record|Rest], Counter) :-
   write(Counter),
@@ -129,37 +156,26 @@ print_records_with_counter([Record|Rest], Counter) :-
   nl,
   NextCounter is Counter + 1,
   print_records_with_counter(Rest, NextCounter).
+
 % --------------------------------------------------------
+
 detective_menu :-
   repeat,
   nl,
   write('=== MENU DO DETETIVE ==='), nl,
   write('1. Pedir dica'), nl,
-  write('2. Listar objetos e vestigios de um suspeito'), nl,
-  write('3. Realizar acusação'), nl,
+  write('2. Listar dicas'), nl,
+  write('3. Listar objetos e vestigios de um suspeito'), nl,
+  write('4. Realizar acusação'), nl,
   write('0. Voltar'), nl, nl,
   read(X),
   option_detective_menu(X),
   !.
 
-% --------------------------------------------------------
-option_detective_menu(0) :- nl,  % Opção 0 - Voltar ao menu de cientista
-scientist_menu.
-option_detective_menu(1) :- % Opção 1 - Pedir dica
-  % Lógica para pedir dica
-  nl,
-  write('Pedindo dica...'), nl,
-  detective_menu.
-option_detective_menu(2) :- % Opção 2 - Listar objetos e vestigios de um suspeito
-  nl,
-  option_scientist_menu(2), % Lógica para listar objetos e vestigios através da option_scientist_menu, com valor atômico 2 
-  detective_menu.
-option_detective_menu(3) :- % Opção 3 - Realizar acusação
-  palpite, % Chamada da função palpite
-  detective_menu.
-option_detective_menu(_) :- % Opção inválida
-  write('Opção inválida. Tente novamente.'), nl,
-  fail.
+option_detective_menu(0) :- nl, scientist_menu. % Opção 0 - Voltar ao menu de cientista
+option_detective_menu(1) :- get_hint_counter(Count), nl, ( Count < 7 -> hint_menu ; write('Você não pode mais pedir dicas!'), nl, detective_menu ), !.
+option_detective_menu(2) :- get_hint_counter(Count), nl, ( Count > 0 -> list_hints ; write('Nenhuma dica disponivel') ), nl, detective_menu, !. % Opção 2 - Listar objetos e vestigios de um suspeito
+option_detective_menu(4) :- palpite, initial_menu. % Opção 4 - Realizar acusação
 
 % --------------------------------------------------------
 % Compara o palpite com as soluções fornecidas
@@ -184,3 +200,47 @@ palpite :-
   ),
   nl,
   write('=== FIM DO JOGO ==='), nl, initial_menu.
+
+% Menu de dica
+hint_menu :-
+  nl,
+  % Obtem dois tipos aleatórios dos possiveis: causa_de_morte, local_crime, clima, acontecimento_repentino, 
+  % vitima_fazia, ocupacao_da_vitima, duracao_crime, roupas_da_vitima, impressao_geral, estado_da_cena,
+  % vestigio_na_cena, relacionamento_social, condicao_do_corpo, indicacao_no_corpo, motivacao_do_crime,
+  % porte_da_vitima, dia_do_crime, evidencia_deixada, identidade_vitima, expressao_da_vitima
+  get_random_hints(HintAType, HintBType),
+  increment_hint_counter,
+  write('=== SELECAO DE DICA ==='), nl,
+  write('1. '),
+  write(HintAType), nl,
+  write('2. '),
+  write(HintBType), nl, 
+  nl,
+  read(HintChoice),
+  ( HintChoice == 1 -> findall(X, tipoDeDica(X, _, HintAType), Records), SelectedHintType = HintAType ; findall(X, tipoDeDica(X, _, HintBType), Records), SelectedHintType = HintBType ),
+  print_records_with_counter(Records, 1),
+  nl,
+  read(Y),
+  tipoDeDica(Hint, Y, SelectedHintType),
+  add_hint(Hint, SelectedHintType),
+  nl,
+  detective_menu.
+
+% Obtem dois tipos diferentes de dicas
+get_random_hints(HintAType, HintBType) :-
+  repeat,
+	findall((X, Y), tipoDeDica(X, _, Y), Hints),
+  random_select((_, HintAType), Hints, RemainingHints),
+  random_select((_, HintBType), RemainingHints, _),
+  dif(HintAType, HintBType),
+	!.
+
+% Listagem de todas as dicas ja fornecidas
+list_hints :-
+  hints(X,Y),
+  write(X),
+  write(' ('),
+  write(Y),
+  write(')'),
+  nl,
+  fail.

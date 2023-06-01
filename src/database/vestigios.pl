@@ -1,25 +1,25 @@
-vestigios(sangue).
-vestigios(cigarro).
-vestigios(cafe).
-vestigios(computador).
-vestigios(caneca).
-vestigios(diamante).
-vestigios(ovos).
-vestigios(envelope).
-vestigios(lanterna).
-vestigios(luvas).
-vestigios(cabelo).
-vestigios(gelo).
-vestigios(tinta).
-vestigios(inseto).
-vestigios(batom).
-vestigios(mapa).
-vestigios(espelho).
-vestigios(agulha).
-vestigios(colar).
-vestigios(tinta).
-vestigios(cueca).
-vestigios(baralho).
-vestigios(dinheiro).
-vestigios(rato).
-vestigios(violino).
+vestigios(1, sangue).
+vestigios(2, cigarro).
+vestigios(3, cafe).
+vestigios(4, computador).
+vestigios(5, caneca).
+vestigios(6, diamante).
+vestigios(7, ovos).
+vestigios(8, envelope).
+vestigios(9, lanterna).
+vestigios(10, luvas).
+vestigios(11, cabelo).
+vestigios(12, gelo).
+vestigios(13, tinta).
+vestigios(14, inseto).
+vestigios(15, batom).
+vestigios(16, mapa).
+vestigios(17, espelho).
+vestigios(18, agulha).
+vestigios(19, colar).
+vestigios(20, tinta).
+vestigios(21, cueca).
+vestigios(22, baralho).
+vestigios(23, dinheiro).
+vestigios(24, rato).
+vestigios(25, violino).
