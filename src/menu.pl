@@ -175,7 +175,7 @@ detective_menu :-
 option_detective_menu(0) :- nl, scientist_menu. % Opção 0 - Voltar ao menu de cientista
 option_detective_menu(1) :- get_hint_counter(Count), nl, ( Count < 7 -> hint_menu ; write('Você não pode mais pedir dicas!'), nl, detective_menu ), !.
 option_detective_menu(2) :- get_hint_counter(Count), nl, ( Count > 0 -> list_hints ; write('Nenhuma dica disponivel') ), nl, detective_menu, !. % Opção 2 - Listar objetos e vestigios de um suspeito
-option_detective_menu(4) :- palpite, initial_menu. % Opção 4 - Realizar acusação
+option_detective_menu(4) :- accuse_suspect, initial_menu. % Opção 4 - Realizar acusação
 
 % --------------------------------------------------------
 % Compara o palpite com as soluções fornecidas
@@ -244,3 +244,49 @@ list_hints :-
   write(')'),
   nl,
   fail.
+
+% O usuario escolhe quem foi o assassino, o objeto usado e o vestigio deixado por ele.
+accuse_suspect :-
+  write("Escolha o Assassino:"), nl,
+  show_suspects,  
+  read(X),
+  suspeito(X, PlayerSuspect),
+
+  write("Escolha o Objeto:"), nl,
+  show_objects,
+  read(Y),
+  objeto(Y, PlayerObject),
+  
+  write("Escolha o Vestigio"), nl,
+  show_vestigios,
+  read(Z),
+  vestigios(Z, PlayerVestigio),
+  nl,
+  ( 
+    check_solution(PlayerSuspect, PlayerObject, PlayerVestigio) -> 
+      write('Correto!! Parabéns :D') 
+      ; 
+      solucao_suspeito(SuspectSolution), solucao_objeto(ObjectSolution), solucao_vestigios(VestigioSolution), write('Errado =('), nl, write('Resposta: '), write('O assassino foi '), write(SuspectSolution), write(' com '), write(ObjectSolution), write(' deixando '), write(VestigioSolution), write(' como vestigio') 
+  ),
+  nl,
+  nl.
+
+show_suspects :-
+  findall(X, suspeito(_, X), Suspeitos),
+  print_records_with_counter(Suspeitos, 1),
+  nl.
+
+show_objects :- 
+  findall(X, objeto(_, X), Objetos),
+  print_records_with_counter(Objetos, 1),
+  nl.
+
+show_vestigios :-
+  findall(X, vestigios(_, X), Vestigios),
+  print_records_with_counter(Vestigios, 1),
+  nl.
+
+check_solution(Suspect, Object, Vestigio) :-
+  solucao_suspeito(Suspect),
+  solucao_objeto(Object),
+  solucao_vestigios(Vestigio).
