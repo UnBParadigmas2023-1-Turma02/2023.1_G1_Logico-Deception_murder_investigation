@@ -139,7 +139,48 @@ detective_menu :-
   write('3. Realizar acusação'), nl,
   write('0. Voltar'), nl, nl,
   read(X),
-  option_scientist_menu(X),
+  option_detective_menu(X),
   !.
 
-  
+% --------------------------------------------------------
+option_detective_menu(0) :- nl,  % Opção 0 - Voltar ao menu de cientista
+scientist_menu.
+option_detective_menu(1) :- % Opção 1 - Pedir dica
+  % Lógica para pedir dica
+  nl,
+  write('Pedindo dica...'), nl,
+  detective_menu.
+option_detective_menu(2) :- % Opção 2 - Listar objetos e vestigios de um suspeito
+  nl,
+  option_scientist_menu(2), % Lógica para listar objetos e vestigios através da option_scientist_menu, com valor atômico 2 
+  detective_menu.
+option_detective_menu(3) :- % Opção 3 - Realizar acusação
+  palpite, % Chamada da função palpite
+  detective_menu.
+option_detective_menu(_) :- % Opção inválida
+  write('Opção inválida. Tente novamente.'), nl,
+  fail.
+
+% --------------------------------------------------------
+% Compara o palpite com as soluções fornecidas
+
+palpite :-
+  nl,
+  write('=== PALPITE ==='), nl,
+  write('Digite o palpite do Suspeito: '),
+  read(PalpiteSuspeito),
+  write('Digite o palpite do Objeto: '),
+  read(PalpiteObjeto),
+  write('Digite o palpite do Vestígio: '),
+  read(PalpiteVestigio),
+  nl,
+  (
+    solucao_suspeito(PalpiteSuspeito),
+    solucao_objeto(PalpiteObjeto),
+    solucao_vestigios(PalpiteVestigio) ->
+    write('Você ACERTOU o palpite!'), nl
+  ;
+    write('Você ERROU o palpite!'), nl
+  ),
+  nl,
+  write('=== FIM DO JOGO ==='), nl.
