@@ -175,7 +175,7 @@ detective_menu :-
 option_detective_menu(0) :- nl, scientist_menu. % Opção 0 - Voltar ao menu de cientista
 option_detective_menu(1) :- get_hint_counter(Count), nl, ( Count < 7 -> hint_menu ; write('Você não pode mais pedir dicas!'), nl, detective_menu ), !.
 option_detective_menu(2) :- get_hint_counter(Count), nl, ( Count > 0 -> list_hints ; write('Nenhuma dica disponivel') ), nl, detective_menu, !. % Opção 2 - Listar objetos e vestigios de um suspeito
-option_detective_menu(4) :- accuse_suspect, initial_menu. % Opção 4 - Realizar acusação
+option_detective_menu(4) :- accuse_suspect, reset_solution, initial_menu. % Opção 4 - Realizar acusação
 
 % --------------------------------------------------------
 % Compara o palpite com as soluções fornecidas
@@ -290,3 +290,8 @@ check_solution(Suspect, Object, Vestigio) :-
   solucao_suspeito(Suspect),
   solucao_objeto(Object),
   solucao_vestigios(Vestigio).
+
+reset_solution :-
+  retractall(solucao_suspeito(_)),
+  retractall(solucao_objeto(_)),
+  retractall(solucao_vestigios(_)).
