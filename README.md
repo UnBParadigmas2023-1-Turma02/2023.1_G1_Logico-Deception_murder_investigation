@@ -1,46 +1,79 @@
-# RepositorioTemplate
-Esse repositório é para ser utilizado pelos grupos como um template inicial, da home page do Projeto.
-As seções do Template NÃO DEVEM SER OMITIDAS, sendo TODAS RELEVANTES.
-
-**!! *Atenção: Renomeie o seu repositório para (Ano.Semestre)_(Grupo)_(Paradigma)_(NomeDoProjeto)*. !!** 
-
-Paradigmas:
- - Funcional
- - Logico
- - SMA
-
-**!! *Não coloque os nomes dos alunos no título do repositório*. !!**
-
-**!! *Exemplo de título correto: 2023.1_G1_Logico_ProjetoRoteirosAereos*. !!**
- 
- (Apague esses comentários)
-
-# NomeDoProjeto
+# 2023.1 G1 Lógico: Deception: Murder in Hong Kong
 
 **Disciplina**: FGA0210 - PARADIGMAS DE PROGRAMAÇÃO - T02 <br>
-**Nro do Grupo (de acordo com a Planilha de Divisão dos Grupos)**: XX<br>
-**Paradigma**: XXXXXXXXXX<br>
+**Nro do Grupo (de acordo com a Planilha de Divisão dos Grupos)**: 01<br>
+**Paradigma**: Funcional<br>
 
 ## Alunos
 |Matrícula | Aluno |
 | -- | -- |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
+| 19/0054832 | Arthur Talles de Sousa Cunha       |
+| 18/0105256 | Lucas da Cunha Andrade             |
+| 18/0066382 | Marcos Felipe de Almeida Souza     |
+| 18/0129147 | Pedro de Miranda Haick             |
+| 17/0114929 | Thiago França Vale Oliveira        |
+| 18/0068229 | Victor Yukio Cavalcanti Miki       |
 
 ## Sobre 
-Descreva o seu projeto em linhas gerais. 
-Use referências, links, que permitam conhecer um pouco mais sobre o projeto.
-Capriche nessa seção, pois ela é a primeira a ser lida pelos interessados no projeto.
+Esse projeto trás um reinterpretação de um jogo de tabuleiro chamado Deception: Murder in Hong Kong para a linguagem Haskell usando os paradigmas da programação funcional.
+
+Nesse jogo cooperativo, o cientista florence deve ajudar o(s) investigadore(s) a descobrir quem é o assassino. Apenas o cientista sabe quem é o assasino, qual foi a arma do crime e qual prova/vestigio foi deixado para trás. Assim, a cada turno os detetives pode pedir dicas limitadas até descobrirem que é o assassino e confirmarem sua resposta pelo menu de apontando um suspeito e suas respectivas armas.
+
+O jogo acaba com os investigadores ganhando ou perdendo logo após confirmarem o palpite.
+
+<center>
+
+![](./assets/Deception.jpg)
+
+capa do jogo
+</center>
+
+<center>
+
+![](./assets/tips.jpeg)
+
+esquema das dicas do jogo.
+</center>
 
 ## Screenshots
-Adicione 2 ou mais screenshots do projeto em termos de interface e/ou funcionamento.
+Agora que conhecemos o jogo aki tem alguams screenshots do jogo funcionando.
+
+#### MENU INICIAL
+
+#### MENU DO CIENTISTA
+
+#### MENU DOS INVESTIGADORES
+
+#### MENU ESCOLHA DO TIPO DE DICA
+
+#### MENU ESCOLHA DA DICA
+
+#### DAR PALPITE
+
+#### LISTAGENS
 
 ## Instalação 
-**Linguagens**: xxxxxx<br>
-**Tecnologias**: xxxxxx<br>
-Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
-Insira um manual ou um script para auxiliar ainda mais.
-Gifs animados e outras ilustrações são bem-vindos!
+**Linguagens**: Prolog<br>
+**Tecnologias**: swipl<br>
+Pré-requisitos para rodar o seu projeto e os comandos necessários:
+
+Instalar o [swipl](https://www.swi-prolog.org/download/stable). O SWI-Prolog é um popular ambiente de desenvolvimento para a linguagem de programação Prolog e oferece uma ampla gama de recursos e bibliotecas.
+
+Após a instalação do SWI-Prolog, é necessário configurar o ambiente para que você possa rodar programas em Prolog. Isso geralmente envolve adicionar o diretório de instalação do SWI-Prolog ao seu PATH (variável de ambiente que lista os diretórios a serem pesquisados para encontrar executáveis).
+
+* No Windows:
+
+    * Abra o Painel de Controle e navegue até Sistema e Segurança -> Sistema -> Configurações avançadas do sistema.
+    * Clique no botão "Variáveis de Ambiente" e encontre a variável PATH na seção Variáveis do Sistema.
+    * Edite a variável PATH e adicione o diretório de instalação do SWI-Prolog (por exemplo, C:\Program Files\swipl\bin) ao final da lista, separado por um ponto-e-vírgula.
+
+* No macOS e Linux:
+
+    * pode usar o brew ou apt install swi-prolog.
+
+Após instalação e configuração do ambiente de desenvolvimento clonamos o reposítório com o comando:
+
+> $ git clone https://github.com/UnBParadigmas2023-1-Turma02/2023.1_G1_Logico-Deception_murder_investigation.git
 
 ## Uso 
 Explique como usar seu projeto.
@@ -58,10 +91,15 @@ OBS: TODOS DEVEM PARTICIPAR, CONFERINDO PONTOS DE VISTA.
 TEMPO: +/- 15min
 
 ## Participações
-Apresente, brevemente, como cada membro do grupo contribuiu para o projeto.
+Participação dos membros do grupo para o projeto:
 |Nome do Membro | Contribuição | Significância da Contribuição para o Projeto (Excelente/Boa/Regular/Ruim/Nula) |
 | -- | -- | -- |
-| Fulano  |  Programação dos Fatos da Base de Conhecimento Lógica | Boa |
+| Arthur Talles de Sousa Cunha       |   | Boa |
+| Lucas da Cunha Andrade             |   | Excelente |
+| Marcos Felipe de Almeida Souza     |   | Boa |
+| Pedro de Miranda Haick             |   | Boa |
+| Thiago França Vale Oliveira        |   | Boa |
+| Victor Yukio Cavalcanti Miki       |   | Boa |
 
 ## Outros 
 Quaisquer outras informações sobre o projeto podem ser descritas aqui. Não esqueça, entretanto, de informar sobre:
