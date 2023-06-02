@@ -191,7 +191,7 @@ option_detective_menu(0) :- nl, scientist_menu. % Opção 0 - Voltar ao menu de 
 option_detective_menu(1) :- get_hint_counter(Count), nl, ( Count < 7 -> hint_menu ; write('Você não pode mais pedir dicas!'), nl, detective_menu ), !.
 option_detective_menu(2) :- get_hint_counter(Count), nl, ( Count > 0 -> list_hints ; write('Nenhuma dica disponivel') ), nl, detective_menu, !. % Opção 2 - Listar objetos e vestigios de um suspeito
 option_detective_menu(3) :- choose_suspect, initial_menu. % Opção 3 - Listar Objetos de um Suspeito
-option_detective_menu(4) :- accuse_suspect, reset_solution, initial_menu. % Opção 4 - Realizar acusação
+option_detective_menu(4) :- choose_difficulty, reset_solution, initial_menu. % Opção 4 - Realizar acusação
 
 % Escolha suspeito %
 choose_suspect :-
@@ -338,7 +338,7 @@ accuse_suspect :-
   nl,
   ( 
     check_solution(PlayerSuspect, PlayerObject, PlayerVestigio) -> 
-      write('Correto!! Parabéns :D') 
+      write('Correto!! Parabéns :D')
       ; 
       solucao_suspeito(SuspectSolution), solucao_objeto(ObjectSolution), solucao_vestigios(VestigioSolution), write('Errado =('), nl, write('Resposta: '), write('O assassino foi '), write(SuspectSolution), write(' com '), write(ObjectSolution), write(' deixando '), write(VestigioSolution), write(' como vestigio') 
   ),
@@ -378,3 +378,25 @@ reset_solution :-
   retractall(solucao_suspeito(_)),
   retractall(solucao_objeto(_)),
   retractall(solucao_vestigios(_)).
+
+choose_difficulty :-
+  nl,
+  write('=== NÍVEL DE DIFICULDADE ==='), nl,
+  write('1. Fácil'), nl,
+  write('2. Médio'), nl,
+  write('3. Difícil'), nl,
+  nl,
+  read(Option),
+  option_choose_difficulty(Option),
+  !.
+
+option_choose_difficulty(3) :- loop_accuse(1).
+option_choose_difficulty(2) :- loop_accuse(3).
+option_choose_difficulty(1) :- loop_accuse(6).
+
+
+loop_accuse(Option) :-
+  Option > 0,
+  Next_option is Option - 1, 
+  write('Acusação '), write(Option), write(':'), 
+  accuse_suspect, loop_accuse(Next_option).
