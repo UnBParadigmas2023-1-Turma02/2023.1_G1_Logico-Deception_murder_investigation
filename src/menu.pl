@@ -56,7 +56,7 @@ initial_menu :-
 
 option_initial_menu(0) :- !.
 option_initial_menu(1) :- scientist_menu, nl, !.
-option_initial_menu(2) :- show_rules, !.
+option_initial_menu(2) :- show_rules, initial_menu, !.
 option_initial_menu(_) :- write('Opção inválida. Tente novamente.'), nl, fail.
 
 % --------------------------------------------------------
