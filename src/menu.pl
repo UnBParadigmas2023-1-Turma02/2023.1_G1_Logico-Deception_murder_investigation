@@ -175,13 +175,55 @@ detective_menu :-
 option_detective_menu(0) :- nl, scientist_menu. % Opção 0 - Voltar ao menu de cientista
 option_detective_menu(1) :- get_hint_counter(Count), nl, ( Count < 7 -> hint_menu ; write('Você não pode mais pedir dicas!'), nl, detective_menu ), !.
 option_detective_menu(2) :- get_hint_counter(Count), nl, ( Count > 0 -> list_hints ; write('Nenhuma dica disponivel') ), nl, detective_menu, !. % Opção 2 - Listar objetos e vestigios de um suspeito
+option_detective_menu(3) :- choose_suspect, initial_menu. % Opção 3 - Listar Objetos de um Suspeito
 option_detective_menu(4) :- accuse_suspect, reset_solution, initial_menu. % Opção 4 - Realizar acusação
+
+% Escolha suspeito %
+choose_suspect :-
+  show_suspects,
+  read(Suspect_number),
+  nl,
+  Suspect_number > 0,
+  suspeito(Suspect_number, Suspect_name),
+  show_suspect_cards(Suspect_name),
+  nl.
+
+% Menu de informacoes dos suspeitos  %
+show_suspect_cards(Suspect_name) :-
+  write('1. Listar objetos do suspeito'), nl,
+  write('2. Listar vestigios do suspeito'), nl,
+  write('3. Escolher outro suspeito'), nl,
+  write('4. Voltar ao menu'), nl,
+  read(X), nl,
+  option_type_object(X, Suspect_name),
+  show_suspect_cards(Suspect_name).
+
+
+% Trata as escolhas d menu de informacoes dos suspeitos %
+option_type_object(1, Suspect):- show_suspect_objects(Suspect), nl.
+option_type_object(2, Suspect):- show_suspect_vestigios(Suspect), nl.
+option_type_object(3, _):- choose_suspect.
+option_type_object(0, _):- initial_menu.
+
+% Mostra objetos de um suspeito %
+show_suspect_objects(Suspect_name) :-
+  findall(X, suspeitoObjeto(Suspect_name, _, X), SuspeitoObjeto),
+  print_records_with_counter(SuspeitoObjeto, 1),
+  nl.
+
+% Mostra vestigios de um suspeito %
+show_suspect_vestigios(Suspect_name) :-
+  findall(X, suspeitoVestigio(Suspect_name, _, X), SuspeitoVestigio),
+  print_records_with_counter(SuspeitoVestigio, 1),
+  nl.
+
 
 % --------------------------------------------------------
 % Compara o palpite com as soluções fornecidas
 
 palpite :-
   nl,
+  write('\e[H\e[2J'),
   write('=== PALPITE ==='), nl,
   write('Digite seu palpite para suspeito: '), nl,
   read(PalpiteSuspeito),
@@ -210,6 +252,7 @@ hint_menu :-
   % porte_da_vitima, dia_do_crime, evidencia_deixada, identidade_vitima, expressao_da_vitima
   get_random_hints(HintAType, HintBType),
   increment_hint_counter,
+  write('\e[H\e[2J'),
   write('=== SELECAO DE DICA ==='), nl,
   write('1. '),
   write(HintAType), nl,
@@ -247,16 +290,17 @@ list_hints :-
 
 % O usuario escolhe quem foi o assassino, o objeto usado e o vestigio deixado por ele.
 accuse_suspect :-
+  write('\e[H\e[2J'),
   write("Escolha o Assassino:"), nl,
   show_suspects,  
   read(X),
   suspeito(X, PlayerSuspect),
-
+  write('\e[H\e[2J'),
   write("Escolha o Objeto:"), nl,
   show_objects,
   read(Y),
   objeto(Y, PlayerObject),
-  
+  write('\e[H\e[2J'),
   write("Escolha o Vestigio"), nl,
   show_vestigios,
   read(Z),
