@@ -38,19 +38,53 @@ esquema das dicas do jogo.
 ## Screenshots
 Agora que conhecemos o jogo aki tem alguams screenshots do jogo funcionando.
 
+Entre na pasta '/src' dentro do projeto e rode o comando:
+
+> $ swipl main.pl
+
+isso deve inicar o programa diretamente no arquivo main.
+
+Agora é so jogar como veremos abaixo:
+
+Para selecionar as opções digite o número seguido de um '.'.
+
+> exemplo:
+
+> -? 1.
+
 #### MENU INICIAL
+
+![](./assets/inicio.png)
 
 #### MENU DO CIENTISTA
 
+![](./assets/selectSuspeito.png)
+
+![](./assets/iniciarJogo.png)
+
 #### MENU DOS INVESTIGADORES
 
-#### MENU ESCOLHA DO TIPO DE DICA
+![](./assets/menuDetetive.png)
 
-#### MENU ESCOLHA DA DICA
+#### MENU ESCOLHA DO TIPO DE DICA e DICA
+
+![](./assets/tipodedica.png)
 
 #### DAR PALPITE
 
-#### LISTAGENS
+![](./assets/darpalpite.png)
+
+![](./assets/finalizado.png)
+
+#### LISTAGENS DAS CARTAS
+
+![](./assets/vercartas.png)
+
+Para sair digite '0.' para sair do programa e:
+
+> -? % halt
+
+para sair do ambiente prolog.
 
 ## Instalação 
 **Linguagens**: Prolog<br>
@@ -94,12 +128,12 @@ TEMPO: +/- 15min
 Participação dos membros do grupo para o projeto:
 |Nome do Membro | Contribuição | Significância da Contribuição para o Projeto (Excelente/Boa/Regular/Ruim/Nula) |
 | -- | -- | -- |
-| Arthur Talles de Sousa Cunha       |   | Boa |
-| Lucas da Cunha Andrade             |   | Excelente |
-| Marcos Felipe de Almeida Souza     |   | Boa |
-| Pedro de Miranda Haick             |   | Boa |
+| Arthur Talles de Sousa Cunha       | checagem da condição de vitória, menu de palpites, pesquisa para limpar tela, popular o banco  | Excelente |
+| Lucas da Cunha Andrade             | mecanismo de listagem, randomização das dicas, logica das dicas, menu do cientista e outras listagens | Excelente |
+| Marcos Felipe de Almeida Souza     | listar cartas, popular banco, menu das cartas  | Boa |
+| Pedro de Miranda Haick             |  popular banco | Boa |
 | Thiago França Vale Oliveira        |   | Boa |
-| Victor Yukio Cavalcanti Miki       |   | Boa |
+| Victor Yukio Cavalcanti Miki       | Idealização do projeto, mecanismo de consulta, popular banco, correções finais, documentacão  | Excelente |
 
 ## Outros 
 Quaisquer outras informações sobre o projeto podem ser descritas aqui. Não esqueça, entretanto, de informar sobre:

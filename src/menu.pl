@@ -56,9 +56,9 @@ initial_menu :-
   !.
 
 option_initial_menu(0) :- reset_solution, !.
-option_initial_menu(1) :- scientist_menu, nl, !.
-option_initial_menu(2) :- show_rules, initial_menu, !.
-option_initial_menu(_) :- write('Opção inválida. Tente novamente.'), nl, fail.
+option_initial_menu(1) :- write('\e[H\e[2J'), scientist_menu, nl, !.
+option_initial_menu(2) :- write('\e[H\e[2J'), show_rules, initial_menu, !.
+option_initial_menu(_) :- write('\e[H\e[2J'), write('Opção inválida. Tente novamente.'), nl, fail.
 
 % --------------------------------------------------------
 % Menu de cientista forense
@@ -83,9 +83,9 @@ scientist_menu :-
   !.
 
 option_scientist_menu(0) :- !.
-option_scientist_menu(1) :- select_suspeitos, !.
-option_scientist_menu(2) :- select_objeto, !.
-option_scientist_menu(3) :- select_vestigios, !.
+option_scientist_menu(1) :- write('\e[H\e[2J'), select_suspeitos, !.
+option_scientist_menu(2) :- write('\e[H\e[2J'), select_objeto, !.
+option_scientist_menu(3) :- write('\e[H\e[2J'), select_vestigios, !.
 option_scientist_menu(4) :- 
   ((not(is_suspeito_empty),not(is_objeto_empty),not(is_vestigios_empty)) ->
     detective_menu,
@@ -103,8 +103,7 @@ option_scientist_menu(_) :- write('Opção inválida. Tente novamente.'), nl, fa
 
 select_suspeitos :-
   write('\e[H\e[2J'),
-  write('========= Selecione o suspeito '),
-  write('========='), nl,
+  write('========= Selecione o suspeito ========='), nl,
   nl,
   findall(Name, suspeito(_, Name), Records),
   print_records_with_counter(Records, 1),
@@ -114,6 +113,7 @@ select_suspeitos :-
   retractall(solucao_suspeito(_)),
   suspeito(Index, Name),
   assert(solucao_suspeito(Name)),
+  write('\e[H\e[2J'),
   scientist_menu.
 
 % --------------------------------------------------------
@@ -122,6 +122,7 @@ select_suspeitos :-
 
 select_objeto :-
   write('\e[H\e[2J'),
+  write('========= Qual arma o assassino usou? ========='), nl,
   nl,
   solucao_suspeito(Name),
   findall(X, suspeitoObjeto(Name, _, X), Records),
@@ -132,6 +133,7 @@ select_objeto :-
   retractall(solucao_objeto(_)),
   suspeitoObjeto(Name, Index, ObjectName),
   assert(solucao_objeto(ObjectName)),
+  write('\e[H\e[2J'),
   scientist_menu.
 
 % --------------------------------------------------------
@@ -140,6 +142,7 @@ select_objeto :-
 
 select_vestigios :-
   write('\e[H\e[2J'),
+  write('========= Que vestigio o assassino deixou para trás? ========='), nl,
   nl,
   solucao_suspeito(Name),
   findall(X, suspeitoVestigio(Name, _, X), Records),
@@ -150,6 +153,7 @@ select_vestigios :-
   retractall(solucao_vestigios(_)),
   suspeitoVestigio(Name, X, VestigioName),
   assert(solucao_vestigios(VestigioName)),
+  write('\e[H\e[2J'),
   scientist_menu.
 
 % --------------------------------------------------------
