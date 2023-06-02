@@ -12,6 +12,7 @@
 :-dynamic solucao_suspeito/1.
 :-dynamic solucao_objeto/1.
 :-dynamic solucao_vestigios/1.
+:-dynamic quantidade_de_palpites/1.
 
 is_suspeito_empty :-
   \+ solucao_suspeito(_).
@@ -50,11 +51,11 @@ initial_menu :-
   write('1. Novo Jogo'), nl,
   write('2. Regras'), nl,
   write('0. Fechar'), nl, nl,
-  read(X),
-  option_initial_menu(X),
+  read(Option),
+  option_initial_menu(Option),
   !.
 
-option_initial_menu(0) :- !.
+option_initial_menu(0) :- reset_solution, !.
 option_initial_menu(1) :- scientist_menu, nl, !.
 option_initial_menu(2) :- show_rules, initial_menu, !.
 option_initial_menu(_) :- write('Opção inválida. Tente novamente.'), nl, fail.
@@ -65,31 +66,32 @@ scientist_menu :-
   repeat,
   nl,
   write('=== MENU DO CIENTISTA FORENSE ==='), nl,
-  write('1. Selecionar assassino'), nl,
-  write('2. Selecionar arma do crime'), nl,
-  write('3. Selecionar prova do crime'), nl,
+  write('1. Selecionar ou alterar assassino'), nl,
+  write('2. Selecionar ou alterar arma do crime'), nl,
+  write('3. Selecionar ou alterar prova do crime'), nl,
   (
     not(is_suspeito_empty),
     not(is_objeto_empty),
     not(is_vestigios_empty) ->
-    write('4. Continuar'), nl
+    write('4. Confirmar selecao e inicar partida'), nl
   ;
     true 
   ),
   write('0. Fechar'), nl, nl,
-  read(X),
-  option_scientist_menu(X),
+  read(Option),
+  option_scientist_menu(Option),
   !.
 
 option_scientist_menu(0) :- !.
-option_scientist_menu(1) :- print_suspeitos, !.
-option_scientist_menu(2) :- print_objeto, !.
-option_scientist_menu(3) :- print_vestigios, !.
+option_scientist_menu(1) :- select_suspeitos, !.
+option_scientist_menu(2) :- select_objeto, !.
+option_scientist_menu(3) :- select_vestigios, !.
 option_scientist_menu(4) :- 
   ((not(is_suspeito_empty),not(is_objeto_empty),not(is_vestigios_empty)) ->
     detective_menu,
     true
   ;
+    write('\e[H\e[2J'),
     option_scientist_menu(_),
     fail
   ).
@@ -99,15 +101,18 @@ option_scientist_menu(_) :- write('Opção inválida. Tente novamente.'), nl, fa
 % Print dos suspeitos possiveis cadastrados com um contador para 
 % facilitar a escolha do usuario
 
-print_suspeitos :-
+select_suspeitos :-
+  write('\e[H\e[2J'),
+  write('========= Selecione o suspeito '),
+  write('========='), nl,
   nl,
   findall(Name, suspeito(_, Name), Records),
   print_records_with_counter(Records, 1),
   nl,
-  read(X),
-  X > 0,
+  read(Index),
+  Index > 0,
   retractall(solucao_suspeito(_)),
-  suspeito(X, Name),
+  suspeito(Index, Name),
   assert(solucao_suspeito(Name)),
   scientist_menu.
 
@@ -115,16 +120,17 @@ print_suspeitos :-
 % Print dos objetos possiveis cadastrados com um contador para 
 % facilitar a escolha do usuario
 
-print_objeto :-
+select_objeto :-
+  write('\e[H\e[2J'),
   nl,
-  solucao_suspeito(Y),
-  findall(X, suspeitoObjeto(Y, _, X), Records),
+  solucao_suspeito(Name),
+  findall(X, suspeitoObjeto(Name, _, X), Records),
   print_records_with_counter(Records, 1),
   nl,
-  read(X),
-  X > 0,
+  read(Index),
+  Index > 0,
   retractall(solucao_objeto(_)),
-  suspeitoObjeto(Y, X, ObjectName),
+  suspeitoObjeto(Name, Index, ObjectName),
   assert(solucao_objeto(ObjectName)),
   scientist_menu.
 
@@ -132,16 +138,17 @@ print_objeto :-
 % Print dos vestigios possiveis cadastrados com um contador para 
 % facilitar a escolha do usuario
 
-print_vestigios :-
+select_vestigios :-
+  write('\e[H\e[2J'),
   nl,
-  solucao_suspeito(Y),
-  findall(X, suspeitoVestigio(Y, _, X), Records),
+  solucao_suspeito(Name),
+  findall(X, suspeitoVestigio(Name, _, X), Records),
   print_records_with_counter(Records, 1),
   nl,
   read(X),
   X > 0,
   retractall(solucao_vestigios(_)),
-  suspeitoVestigio(Y, X, VestigioName),
+  suspeitoVestigio(Name, X, VestigioName),
   assert(solucao_vestigios(VestigioName)),
   scientist_menu.
 
@@ -163,6 +170,10 @@ detective_menu :-
   repeat,
   nl,
   write('=== MENU DO DETETIVE ==='), nl,
+  hint_counter(Hints),
+  write('Dicas restantes: '),
+  Rh is 7 - Hints,
+  write(Rh), nl,
   write('1. Pedir dica'), nl,
   write('2. Listar dicas'), nl,
   write('3. Listar objetos e vestigios de um suspeito'), nl,
@@ -180,20 +191,24 @@ option_detective_menu(4) :- accuse_suspect, reset_solution, initial_menu. % Opç
 
 % Escolha suspeito %
 choose_suspect :-
+  write('\e[H\e[2J'),
   show_suspects,
   read(Suspect_number),
   nl,
   Suspect_number > 0,
   suspeito(Suspect_number, Suspect_name),
   show_suspect_cards(Suspect_name),
+  write('\e[H\e[2J'),
   nl.
 
 % Menu de informacoes dos suspeitos  %
 show_suspect_cards(Suspect_name) :-
-  write('1. Listar objetos do suspeito'), nl,
-  write('2. Listar vestigios do suspeito'), nl,
+  write('1. Listar objetos do(a): '),
+  write(Suspect_name), nl,
+  write('2. Listar vestigios do(a): '),
+  write(Suspect_name), nl,
   write('3. Escolher outro suspeito'), nl,
-  write('4. Voltar ao menu'), nl,
+  write('4. Voltar ao menu do detetive'), nl,
   read(X), nl,
   option_type_object(X, Suspect_name),
   show_suspect_cards(Suspect_name).
@@ -207,12 +222,20 @@ option_type_object(0, _):- initial_menu.
 
 % Mostra objetos de um suspeito %
 show_suspect_objects(Suspect_name) :-
+  write('\e[H\e[2J'),
+  write('========= Objetos de  '),
+  write(Suspect_name),
+  write(' ========='), nl,
   findall(X, suspeitoObjeto(Suspect_name, _, X), SuspeitoObjeto),
   print_records_with_counter(SuspeitoObjeto, 1),
   nl.
 
 % Mostra vestigios de um suspeito %
 show_suspect_vestigios(Suspect_name) :-
+  write('\e[H\e[2J'),
+  write('========= Vestigios de '),
+  write(Suspect_name),
+  write(' ========='), nl,
   findall(X, suspeitoVestigio(Suspect_name, _, X), SuspeitoVestigio),
   print_records_with_counter(SuspeitoVestigio, 1),
   nl.
@@ -222,6 +245,7 @@ show_suspect_vestigios(Suspect_name) :-
 % Compara o palpite com as soluções fornecidas
 
 palpite :-
+  write('\e[H\e[2J'),
   nl,
   write('\e[H\e[2J'),
   write('=== PALPITE ==='), nl,
@@ -245,6 +269,7 @@ palpite :-
 
 % Menu de dica
 hint_menu :-
+  write('\e[H\e[2J'),
   nl,
   % Obtem dois tipos aleatórios dos possiveis: causa_de_morte, local_crime, clima, acontecimento_repentino, 
   % vitima_fazia, ocupacao_da_vitima, duracao_crime, roupas_da_vitima, impressao_geral, estado_da_cena,
@@ -280,6 +305,7 @@ get_random_hints(HintAType, HintBType) :-
 
 % Listagem de todas as dicas ja fornecidas
 list_hints :-
+  write('\e[H\e[2J'),
   hints(X,Y),
   write(X),
   write(' ('),
@@ -291,20 +317,20 @@ list_hints :-
 % O usuario escolhe quem foi o assassino, o objeto usado e o vestigio deixado por ele.
 accuse_suspect :-
   write('\e[H\e[2J'),
-  write("Escolha o Assassino:"), nl,
   show_suspects,  
+  write("Escolha o Assassino:"), nl,
   read(X),
   suspeito(X, PlayerSuspect),
   write('\e[H\e[2J'),
+  show_objects_by_suspect(PlayerSuspect),
   write("Escolha o Objeto:"), nl,
-  show_objects,
   read(Y),
-  objeto(Y, PlayerObject),
+  suspeitoObjeto(PlayerSuspect, Y, PlayerObject),
   write('\e[H\e[2J'),
+  show_vestigios_by_suspect(PlayerSuspect),
   write("Escolha o Vestigio"), nl,
-  show_vestigios,
   read(Z),
-  vestigios(Z, PlayerVestigio),
+  suspeitoVestigio(PlayerSuspect, Z, PlayerVestigio),
   nl,
   ( 
     check_solution(PlayerSuspect, PlayerObject, PlayerVestigio) -> 
@@ -316,17 +342,26 @@ accuse_suspect :-
   nl.
 
 show_suspects :-
+  write('\e[H\e[2J'),
+  write('========= Selecione o suspeito '),
+  write('========='), nl,
   findall(X, suspeito(_, X), Suspeitos),
   print_records_with_counter(Suspeitos, 1),
   nl.
 
-show_objects :- 
-  findall(X, objeto(_, X), Objetos),
+show_objects_by_suspect(Name) :- 
+  write('\e[H\e[2J'),
+  write('========= Selecione o objeto usado como arma '),
+  write('========='), nl,
+  findall(ObjectName, suspeitoObjeto(Name, _, ObjectName), Objetos),
   print_records_with_counter(Objetos, 1),
   nl.
 
-show_vestigios :-
-  findall(X, vestigios(_, X), Vestigios),
+show_vestigios_by_suspect(Name) :-
+  write('\e[H\e[2J'),
+  write('========= Selecione o vestigio deixado para tras '),
+  write('========='), nl,
+  findall(VestigioName, suspeitoVestigio(Name, _, VestigioName), Vestigios),
   print_records_with_counter(Vestigios, 1),
   nl.
 
