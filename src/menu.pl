@@ -433,9 +433,7 @@ accuse_suspect :-
       ;
       (
         get_palpite_counter(PCounter),
-        write(PCounter),
-        write(PCounter),
-        write(PCounter),
+        write('Errado! tente novamente'), nl,
         PCounter =:= 0 -> 
         solucao_suspeito(SuspectSolution), solucao_objeto(ObjectSolution), solucao_vestigios(VestigioSolution), write('Errado =('), nl, write('Resposta: '), write('O assassino foi '), write(SuspectSolution), write(' com '), write(ObjectSolution), write(' deixando '), write(VestigioSolution), write(' como vestigio'),
         initial_menu
