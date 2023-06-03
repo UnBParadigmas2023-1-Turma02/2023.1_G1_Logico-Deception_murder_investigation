@@ -13,6 +13,8 @@
 :-dynamic solucao_objeto/1.
 :-dynamic solucao_vestigios/1.
 :-dynamic quantidade_de_palpites/1.
+:-dynamic loop_accuse/1.
+loop_accuse(4).
 
 is_suspeito_empty :-
   \+ solucao_suspeito(_).
@@ -22,6 +24,19 @@ is_objeto_empty :-
 
 is_vestigios_empty :-
   \+ solucao_vestigios(_).
+
+% -------------------------------------------------------
+
+is_loop_accuse_empty :-
+  \+ loop_accuse(_).
+
+get_palpite_counter(PCounter) :-
+  loop_accuse(PCounter).
+
+decrement_loop_accuse :-
+  retract(loop_accuse(POldCount)),
+  PNewCount is POldCount - 1,
+  assert(loop_accuse(PNewCount)).
 
 % --------------------------------------------------------
 
@@ -66,19 +81,50 @@ scientist_menu :-
   repeat,
   nl,
   write('=== MENU DO CIENTISTA FORENSE ==='), nl,
-  write('1. Selecionar ou alterar assassino'), nl,
-  write('2. Selecionar ou alterar arma do crime'), nl,
-  write('3. Selecionar ou alterar prova do crime'), nl,
+  write('1. Selecionar ou alterar assassino: '),
+  (
+    not(is_suspeito_empty) -> 
+    solucao_suspeito(SuspectName),
+    write(SuspectName), nl
+  ;
+    write('nenhum.'), nl
+  ),
+  write('2. Selecionar ou alterar arma do crime: '),
+  (
+    not(is_objeto_empty) -> 
+    solucao_objeto(ObjectName),
+    write(ObjectName), nl
+  ;
+    write('nenhum.'), nl
+  ),
+  write('3. Selecionar ou alterar prova do crime: '),
+  (
+    not(is_vestigios_empty) -> 
+    solucao_vestigios(VestigoName),
+    write(VestigoName), nl
+  ;
+    write('nenhum.'), nl
+  ),
+  write('4. Selecionar dificuldade do jogo: '),
+  (
+    not(is_loop_accuse_empty) -> 
+    loop_accuse(Num),
+    write(Num), nl
+  ;
+    write('nenhum.'), nl
+  ),
   (
     not(is_suspeito_empty),
     not(is_objeto_empty),
-    not(is_vestigios_empty) ->
-    write('4. Confirmar selecao e inicar partida'), nl
+    not(is_vestigios_empty),
+    not(is_loop_accuse_empty) ->
+    write('5. Confirmar selecao e inicar partida'), nl
   ;
     true 
   ),
   write('0. Fechar'), nl, nl,
   read(Option),
+  
   option_scientist_menu(Option),
   !.
 
@@ -86,7 +132,8 @@ option_scientist_menu(0) :- !.
 option_scientist_menu(1) :- write('\e[H\e[2J'), select_suspeitos, !.
 option_scientist_menu(2) :- write('\e[H\e[2J'), select_objeto, !.
 option_scientist_menu(3) :- write('\e[H\e[2J'), select_vestigios, !.
-option_scientist_menu(4) :- 
+option_scientist_menu(4) :- write('\e[H\e[2J'), choose_difficulty, !.
+option_scientist_menu(5) :- 
   ((not(is_suspeito_empty),not(is_objeto_empty),not(is_vestigios_empty)) ->
     detective_menu,
     true
@@ -96,6 +143,37 @@ option_scientist_menu(4) :-
     fail
   ).
 option_scientist_menu(_) :- write('Opção inválida. Tente novamente.'), nl, fail.
+
+% -------- Selecao da dificuldade ---------------
+
+choose_difficulty :-
+  nl,
+  write('=== NÍVEL DE DIFICULDADE ==='), nl,
+  write('1. Fácil'), nl,
+  write('2. Médio'), nl,
+  write('3. Difícil'), nl,
+  nl,
+  read(Option),
+  option_choose_difficulty(Option),
+  !.
+
+option_choose_difficulty(3) :-
+  B = 4,
+  assert(loop_accuse(B)),
+  write('\e[H\e[2J'),
+  scientist_menu.
+
+option_choose_difficulty(2) :-
+  B = 6,
+  assert(loop_accuse(B)),
+  write('\e[H\e[2J'),
+  scientist_menu.
+
+option_choose_difficulty(1) :-
+  B = 8,
+  assert(loop_accuse(B)),
+  write('\e[H\e[2J'),
+  scientist_menu.
 
 % --------------------------------------------------------
 % Print dos suspeitos possiveis cadastrados com um contador para 
@@ -178,6 +256,10 @@ detective_menu :-
   write('Dicas restantes: '),
   Rh is 7 - Hints,
   write(Rh), nl,
+  loop_accuse(PalpitesRestantes),
+  write('palpites restantes: '),
+  Pr is PalpitesRestantes + 1,
+  write(Pr), nl,
   write('1. Pedir dica'), nl,
   write('2. Listar dicas'), nl,
   write('3. Listar objetos e vestigios de um suspeito'), nl,
@@ -191,7 +273,7 @@ option_detective_menu(0) :- nl, scientist_menu. % Opção 0 - Voltar ao menu de 
 option_detective_menu(1) :- get_hint_counter(Count), nl, ( Count < 7 -> hint_menu ; write('Você não pode mais pedir dicas!'), nl, detective_menu ), !.
 option_detective_menu(2) :- get_hint_counter(Count), nl, ( Count > 0 -> list_hints ; write('Nenhuma dica disponivel') ), nl, detective_menu, !. % Opção 2 - Listar objetos e vestigios de um suspeito
 option_detective_menu(3) :- choose_suspect, initial_menu. % Opção 3 - Listar Objetos de um Suspeito
-option_detective_menu(4) :- choose_difficulty, reset_solution, initial_menu. % Opção 4 - Realizar acusação
+option_detective_menu(4) :- accuse_suspect. % Opção 4 - Realizar acusação
 
 % Escolha suspeito %
 choose_suspect :-
@@ -266,10 +348,18 @@ palpite :-
     solucao_vestigios(PalpiteVestigio) ->
     write('Você ACERTOU o palpite!'), nl
   ;
+    decrement_loop_accuse,
     write('Você ERROU o palpite!'), nl
   ),
   nl,
-  write('=== FIM DO JOGO ==='), nl, initial_menu.
+  write('=== FIM DO JOGO ==='), nl,
+  (
+    get_palpite_counter(X),
+    X == 0 -> 
+    initial_menu
+  ;
+    detective_menu
+  ).
 
 % Menu de dica
 hint_menu :-
@@ -339,8 +429,19 @@ accuse_suspect :-
   ( 
     check_solution(PlayerSuspect, PlayerObject, PlayerVestigio) -> 
       write('Correto!! Parabéns :D')
-      ; 
-      solucao_suspeito(SuspectSolution), solucao_objeto(ObjectSolution), solucao_vestigios(VestigioSolution), write('Errado =('), nl, write('Resposta: '), write('O assassino foi '), write(SuspectSolution), write(' com '), write(ObjectSolution), write(' deixando '), write(VestigioSolution), write(' como vestigio') 
+      ;
+      (
+        get_palpite_counter(PCounter),
+        write(PCounter),
+        write(PCounter),
+        write(PCounter),
+        PCounter =:= 0 -> 
+        solucao_suspeito(SuspectSolution), solucao_objeto(ObjectSolution), solucao_vestigios(VestigioSolution), write('Errado =('), nl, write('Resposta: '), write('O assassino foi '), write(SuspectSolution), write(' com '), write(ObjectSolution), write(' deixando '), write(VestigioSolution), write(' como vestigio'),
+        initial_menu
+        ;
+        decrement_loop_accuse,
+        detective_menu
+      )
   ),
   nl,
   nl.
@@ -378,25 +479,3 @@ reset_solution :-
   retractall(solucao_suspeito(_)),
   retractall(solucao_objeto(_)),
   retractall(solucao_vestigios(_)).
-
-choose_difficulty :-
-  nl,
-  write('=== NÍVEL DE DIFICULDADE ==='), nl,
-  write('1. Fácil'), nl,
-  write('2. Médio'), nl,
-  write('3. Difícil'), nl,
-  nl,
-  read(Option),
-  option_choose_difficulty(Option),
-  !.
-
-option_choose_difficulty(3) :- loop_accuse(1).
-option_choose_difficulty(2) :- loop_accuse(3).
-option_choose_difficulty(1) :- loop_accuse(6).
-
-
-loop_accuse(Option) :-
-  Option > 0,
-  Next_option is Option - 1, 
-  write('Acusação '), write(Option), write(':'), 
-  accuse_suspect, loop_accuse(Next_option).
