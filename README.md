@@ -132,8 +132,8 @@ Participação dos membros do grupo para o projeto:
 | Lucas da Cunha Andrade             | mecanismo de listagem, randomização das dicas, logica das dicas, menu do cientista e outras listagens | Excelente |
 | Marcos Felipe de Almeida Souza     | listar cartas, popular banco, menu das cartas  | Boa |
 | Pedro de Miranda Haick             |  popular banco | Boa |
-| Thiago França Vale Oliveira        |   | Boa |
-| Victor Yukio Cavalcanti Miki       | Idealização do projeto, mecanismo de consulta, popular banco, correções finais, documentacão  | Excelente |
+| Thiago França Vale Oliveira        | Criar interface grafica e ajudar na correção de bugs | Boa |
+| Victor Yukio Cavalcanti Miki       | I0dealização do projeto, mecanismo de consulta, popular banco, correções finais, documentacão  | Excelente |
 
 ## Outros 
 Quaisquer outras informações sobre o projeto podem ser descritas aqui. Não esqueça, entretanto, de informar sobre:
