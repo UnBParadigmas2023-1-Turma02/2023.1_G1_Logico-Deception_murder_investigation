@@ -2,6 +2,8 @@
 
 :- pce_begin_class(minha_janela, frame).
 
+:- dynamic solucao_suspeito/1.
+
 initialise(F, Label) :->
     send_super(F, initialise(Label)),
     send(F, size, size(300, 200)).
@@ -44,10 +46,7 @@ criar_pagina_regras :-
   6 dicas.
   
   Listar dicas: lista as dicas fornecidas no formato DICA (TIPO DE DICA).
-  
-  Listar objetos e vestigios de um suspeito: são listados todos os objetos e  
-  vestígios que um suspeito possui. Os detetives devem considerar esses itens para
-  estabelecer uma relação com as dicas obtidas com a ajuda do cientista forense.
+      send(DialogGroup, append, new(Botao1, button(Novo Jogo, message(@prolog, menu_cientista), message(Menu, destroy)))),e.
 
   Realizar acusação: o detetive faz uma acusação contra algum dos suspeitos, devendo
   também mencionar o objeto usado no crime e o vestígio deixado pelo assassino. É importante
@@ -62,14 +61,91 @@ criar_menu :-
     new(Menu, dialog('Deception Murder Investigation')),
     new(Titulo, text('Deception Murder Investigation')),
     send(Titulo, font, font(bold, italic, 28)),
-    
     send(Menu, append, Titulo),
     send(Menu, append, new(DialogGroup, dialog_group)),
     send(DialogGroup, label, ''),
-    send(DialogGroup, alignment, center), 
-    send(DialogGroup, append, new(Botao1, button('Novo Jogo'))),
+    send(DialogGroup, alignment, center),
+    send(DialogGroup, append, new(Botao1, button('Novo Jogo', message(@prolog, menu_cientista)))),
     send(DialogGroup, append, new(Botao2, button('Regras', message(@prolog, criar_pagina_regras)))),
     send(Menu, append, button('Fechar', message(Menu, destroy))),
     
     send(Menu, open).
+
+menu_cientista :-
+
+    new(MenuCientista, dialog('Menu Cientista')),
+    new(TituloCientista, text('Menu Cientista')),
+    send(TituloCientista, font, font(bold, italic, 28)),
+    send(MenuCientista, append, TituloCientista),
+    send(MenuCientista, append, new(DialogG, dialog_group)),
+    send(DialogG, label, ''),
+    send(DialogG, alignment, center),
+    send(DialogG, append, new(Botao1, button('Assassino', message(@prolog, lista_assassino)))),
+    send(DialogG, append, new(Botao2, button('Arma do Crime', message(@prolog, lista_arma)))),
+    send(DialogG, append, new(Botao3, button('Prova do Crime', message(@prolog, lista_prova)))),
+    send(MenuCientista, append, new(Botao4, button('Confirmar', message(MenuCientista, destroy)))),
+    (
+        not(is_suspeito_empty)
+        ->
+        send(Botao4, active, @on)
+        ;
+        send(Botao4, active, @off)
+    ),
+    send(MenuCientista, append, button('Fechar', message(MenuCientista, destroy))),
+
+    send(MenuCientista, open).
+
+lista_assassino :-
+    new(SelecaoAssassino, dialog('Seleção Assassino')),
+    new(TituloAssassino, text('Selecione o assassino')),
+    send(TituloAssassino, font, font(bold, italic, 22)),
+    send(SelecaoAssassino, append, TituloAssassino),
+    send(SelecaoAssassino, append, new(DialogG2, dialog_group)),
+    send(DialogG2, label, ''),
+    send(DialogG2, alignment, center),
+    send(DialogG2, append, new(Botao1, button('Maria', message(@prolog, forward, select_assassino, maria)))),
+    send(DialogG2, append, new(Botao2, button('João', message(@prolog, forward, select_assassino, joao)))),
+    send(DialogG2, append, new(Botao3, button('Pedro', message(@prolog, forward, select_assassino, pedro)))),
+    send(DialogG2, append, new(Botao4, button('Ana', message(@prolog, forward, select_assassino, ana)))),
+    send(DialogG2, append, new(Botao5, button('Carlos', message(@prolog, forward, select_assassino, carlos)))),
+
+    send(SelecaoAssassino, open).
+
+select_assassino(Name) :-
+    assert(solucao_suspeito(Name)).
+
+is_suspeito_empty :-
+    \+ solucao_suspeito(_).
+
+lista_arma :-
+    new(SelecaoArma, dialog('Seleção Arma')),
+    new(TituloArma, text('Selecione a arma do crime')),
+    send(TituloArma, font, font(bold, italic, 22)),
+    send(SelecaoArma, append, TituloArma),
+    send(SelecaoArma, append, new(DialogG2, dialog_group)),
+    send(DialogG2, label, ''),
+    send(DialogG2, alignment, center),
+    send(DialogG2, append, new(Botao1, button('Injeção', message(@prolog, forward, select_assassino, maria)))),
+    send(DialogG2, append, new(Botao2, button('Corda', message(@prolog, forward, select_assassino, joao)))),
+    send(DialogG2, append, new(Botao3, button('Guarda-Chuva', message(@prolog, forward, select_assassino, pedro)))),
+    send(DialogG2, append, new(Botao4, button('Explosivo', message(@prolog, forward, select_assassino, ana)))),
+    send(DialogG2, append, new(Botao5, button('Motossera', message(@prolog, forward, select_assassino, carlos)))),
+
+    send(SelecaoArma, open).
+
+lista_prova :-
+    new(SelecaoProva, dialog('Seleção Prova')),
+    new(TituloAssassino, text('Selecione o prova do crime')),
+    send(TituloAssassino, font, font(bold, italic, 22)),
+    send(SelecaoProva, append, TituloAssassino),
+    send(SelecaoProva, append, new(DialogG2, dialog_group)),
+    send(DialogG2, label, ''),
+    send(DialogG2, alignment, center),
+    send(DialogG2, append, new(Botao1, button('Diamante', message(@prolog, forward, select_assassino, maria)))),
+    send(DialogG2, append, new(Botao2, button('Caneca', message(@prolog, forward, select_assassino, joao)))),
+    send(DialogG2, append, new(Botao3, button('Dinheiro', message(@prolog, forward, select_assassino, pedro)))),
+    send(DialogG2, append, new(Botao4, button('Computdor', message(@prolog, forward, select_assassino, ana)))),
+    send(DialogG2, append, new(Botao5, button('Cabelo', message(@prolog, forward, select_assassino, carlos)))),
+
+    send(SelecaoProva, open).
 
