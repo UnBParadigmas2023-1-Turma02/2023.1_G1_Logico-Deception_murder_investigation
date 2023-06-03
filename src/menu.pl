@@ -109,7 +109,8 @@ scientist_menu :-
   (
     not(is_loop_accuse_empty) -> 
     loop_accuse(Num),
-    write(Num), nl
+    RNum is Num + 1,
+    write(RNum), nl
   ;
     write('nenhum.'), nl
   ),
